@@ -1,0 +1,19 @@
+
+
+version: '3.9'
+
+services:
+  postgres:
+    container_name: hybr1d-api
+    image: postgres
+    environment:
+      - POSTGRES_USER=hybr1d
+      - POSTGRES_DB=hybr1d
+      - POSTGRES_PASSWORD=hybr1d
+    volumes:
+      - hybr1d-data:/var/lib/postressql/data 
+    ports:
+      - "5431:5432"
+  
+volumes:
+  hybr1d-data:
