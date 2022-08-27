@@ -1,4 +1,8 @@
-# hybr1d-assignment-api
+# hybr1d-ecommerce-api
+
+  This is the task assignment for the first interview round @Hybr1d
+
+### Procedure to setup the application at localhost: 
 
 Scripts: 
 
