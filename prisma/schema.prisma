@@ -10,32 +10,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id     Int      @id @default(autoincrement())
-  email  String   @unique
-  name   String?
-  seller Sellers?
-  buyer  Buyers?
-}
+model Users {
+  email     String    @id
+  name      String?
+  password  String
+  authToken String?
+  type      user_type
+  seller    Sellers?
+  buyer     Buyers?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-model Sellers {
-  id   String @id
-  user User   @relation(fields: [id], references: [email])
-  
-  @@map("sellers")
+  @@map("users")
 }
 
 model Buyers {
-  id   String @id
-  user User   @relation(fields: [id], references: [email])
+  id        String   @id
+  user      Users    @relation(fields: [id], references: [email])
+  orders    Orders[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("buyers")
 }
 
+model Sellers {
+  id        String    @id
+  user      Users     @relation(fields: [id], references: [email])
+  catalogId Int?
+  catalog   Catalogs?
+  orders    Orders[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("sellers")
+}
+
+model Catalogs {
+  id       Int        @id @default(autoincrement())
+  name     String?
+  sellerId String     @unique
+  seller   Sellers    @relation(fields: [sellerId], references: [id])
+  products Products[]
+
+  @@map("catalogs")
+}
+
 model Products {
-  id    Int    @id
-  name  String
-  price Float
+  id        Int                @id @default(autoincrement())
+  name      String
+  price     Float
+  catalogId Int
+  catalog   Catalogs           @relation(fields: [catalogId], references: [id])
+  orders    ProductsInOrders[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
 
   @@map("products")
+}
+
+model Orders {
+  id        Int                @id @default(autoincrement())
+  buyerId   String
+  sellerId  String
+  buyer     Buyers             @relation(references: [id], fields: [buyerId])
+  seller    Sellers            @relation(fields: [sellerId], references: [id])
+  orders    ProductsInOrders[]
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@map("orders")
+}
+
+model ProductsInOrders {
+  orderId   Int
+  order     Orders   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([orderId, productId])
+  @@map("productsinorders")
+}
+
+enum user_type {
+  BUYER
+  SELLER
 }

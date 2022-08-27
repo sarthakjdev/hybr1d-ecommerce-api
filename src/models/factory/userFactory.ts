@@ -1,8 +1,50 @@
+import prisma from '@lib/prisma'
+import { Users } from '@prisma/client'
+
 export default class UserFactory {
     /**
-     * factory methods
+     * get user
      */
-    static async factoryMethods() {
-        return 'Here you can put methods related to dbs queries and all'
+    static async getUser(email: string): Promise<Users> {
+        const user = await prisma.users.findFirst({
+            where: {
+                email,
+            },
+            include: {
+                seller: true,
+                buyer: true,
+            },
+        })
+
+        return user
+    }
+
+    /**
+     *  create user
+     */
+    static async createUser(userData): Promise<Users> {
+        const user = await prisma.users.create({
+            data: {
+                ...userData,
+            },
+        })
+
+        return user
+    }
+
+    /**
+     * Update auth token
+     */
+    static async updateAuthToken(user: Users, token: string) {
+        const dbUser = await prisma.users.update({
+            where: {
+                email: user.email,
+            },
+            data: {
+                authToken: token,
+            },
+        })
+
+        return dbUser
     }
 }

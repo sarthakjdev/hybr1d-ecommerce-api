@@ -16,8 +16,8 @@ const app = express()
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use('/', serverRoute)
-app.get('/', ready)
+app.use('/api', serverRoute)
+app.get('/api', ready)
 
 app.listen(port, () => {
     logger.info(`Hyb1d API is listening on ${port}`)
