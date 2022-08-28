@@ -1,5 +1,5 @@
 import prisma from '@lib/prisma'
-import { Buyers, Catalogs, Sellers } from '@prisma/client'
+import { Buyers } from '@prisma/client'
 
 export default class BuyerFactory {
     /**
@@ -12,6 +12,24 @@ export default class BuyerFactory {
             },
             include: {
                 user: true,
+                orders: true,
+            },
+        })
+
+        return buyer
+    }
+
+    /**
+     * create buyer
+     */
+    static async createBuyer(id: string): Promise<Buyers> {
+        const buyer = await prisma.buyers.create({
+            data: {
+                id,
+            },
+            include: {
+                user: true,
+                orders: true,
             },
         })
 
@@ -40,5 +58,7 @@ export default class BuyerFactory {
                 buyerId,
             },
         })
+
+        return orders
     }
 }

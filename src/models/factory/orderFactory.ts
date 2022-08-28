@@ -8,7 +8,8 @@ export default class OrderFactory {
     static async createOrder(orderData): Promise<Orders> {
         const order = await prisma.orders.create({
             data: {
-                ...orderData,
+                buyerId: orderData.buyerId,
+                sellerId: orderData.sellerId,
             },
         })
 
@@ -30,5 +31,19 @@ export default class OrderFactory {
         })
 
         return order
+    }
+
+    /**
+     * create products in orders
+     */
+    static async createProductsInOrders(orderId: number, productId: number) {
+        const productsInOrder = await prisma.productsInOrders.create({
+            data: {
+                orderId,
+                productId,
+            },
+        })
+
+        return productsInOrder
     }
 }

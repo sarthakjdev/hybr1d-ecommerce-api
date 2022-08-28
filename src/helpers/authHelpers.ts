@@ -22,7 +22,7 @@ export async function verifyToken(token: string, secretKey: string) {
 }
 
 export default async function retrieveUser(req: Request) {
-    const token = req.headers.authorization.split(' ')[1]
+    const token = req.headers?.authorization?.split(' ')[1]
 
     const decodedPayload = await verifyToken(token, config.JWT_SECRET_KEY)
 

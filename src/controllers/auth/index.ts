@@ -2,10 +2,12 @@ import { Request, Response } from 'express'
 import messages from '@constants/messages'
 import { checkPassword, checkRole, generateHash } from '@helpers/password'
 import config from '@configs/config'
-import { Users } from '@prisma/client'
+import { Users, user_type } from '@prisma/client'
 import jwt from 'jsonwebtoken'
 import { generateJwt, generateRefreshToken } from '@helpers/authHelpers'
 import UserFactory from '@factory/userFactory'
+import BuyerFactory from '@factory/buyerFactory'
+import SellerFactory from '@factory/sellerFactory'
 
 export default class AuthController {
     /**
@@ -30,6 +32,8 @@ export default class AuthController {
             userData.authToken = refreshToken
 
             const user = await UserFactory.createUser(userData)
+            if (user.type === user_type.BUYER) await BuyerFactory.createBuyer(user.email)
+            else await SellerFactory.createSeller(user.email)
 
             return res.status(201).json({
                 token,
@@ -92,16 +96,29 @@ export default class AuthController {
             const { token } = req.body
             if (!token) return res.status(400).send(messages.invalidToken)
             const refreshToken = token.split(' ')[1]
-            const decodedPayload = await jwt.verify(refreshToken, config.JWT_REFRESH_SECRET_KEY)
+            const decodedPayload = await jwt.verify(
+                refreshToken,
+                config.JWT_REFRESH_SECRET_KEY,
+            )
 
             const { email } = decodedPayload as any
 
             const dbUser = await UserFactory.getUser(email)
 
             let newToken: string
-            if (dbUser.authToken === refreshToken) newToken = await generateJwt({ email: dbUser.email, userType: dbUser.type }, config.JWT_SECRET_KEY)
+            if (dbUser.authToken === refreshToken) {
+                newToken = await generateJwt(
+                    { email: dbUser.email, userType: dbUser.type },
+                    config.JWT_SECRET_KEY,
+                )
+            }
 
-            return res.status(200).json({ token: newToken, messages: 'New token generated succesfully' })
+            return res
+                .status(200)
+                .json({
+                    token: newToken,
+                    messages: 'New token generated succesfully',
+                })
         } catch (error) {
             return res.status(500).send(messages.serverError)
         }

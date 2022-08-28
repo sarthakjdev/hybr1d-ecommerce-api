@@ -5,15 +5,43 @@ import express from 'express'
 const router = express.Router()
 
 // get list of sellers
-router.get('/listOfSellers', isAuthenticated, authorizeBuyer, BuyerControllers.getListOfSellers)
+router.get(
+    '/listOfSellers',
+    isAuthenticated,
+    authorizeBuyer,
+    BuyerControllers.getListOfSellers,
+)
 
 // get buyer
-router.get('/:buyerId', isAuthenticated, authorizeBuyer, BuyerControllers.getBuyer)
+router.get(
+    '/:buyerId',
+    isAuthenticated,
+    authorizeBuyer,
+    BuyerControllers.getBuyer,
+)
 
 // get catalog
-router.get('/sellerCatalog/:sellerId', isAuthenticated, authorizeBuyer, BuyerControllers.getCatalogBySellerId)
+router.get(
+    '/sellerCatalog/:sellerId',
+    isAuthenticated,
+    authorizeBuyer,
+    BuyerControllers.getCatalogBySellerId,
+)
 
 // create order
-router.post('/createOrder/:sellerId', isAuthenticated, authorizeBuyer, BuyerControllers.createOrder)
+router.post(
+    '/createOrder/:sellerId',
+    isAuthenticated,
+    authorizeBuyer,
+    BuyerControllers.createOrder,
+)
+
+// get orders
+router.get(
+    '/orders',
+    isAuthenticated,
+    authorizeBuyer,
+    BuyerControllers.getOrders,
+)
 
 export default router

@@ -20,13 +20,45 @@ export default class CatalogFactory {
     }
 
     /**
+     * create catalog
+     */
+    static async createCatalog(
+        sellerId: string,
+        catalogName: string,
+    ): Promise<Catalogs> {
+        const catalog = await prisma.catalogs.create({
+            data: {
+                sellerId,
+                name: catalogName,
+            },
+        })
+        let seller = await prisma.sellers.findFirst({
+            where: {
+                id: sellerId,
+            },
+        })
+        seller = await prisma.sellers.update({
+            where: {
+                id: sellerId,
+            },
+            data: {
+                catalogId: catalog.id,
+            },
+        })
+
+        return catalog
+    }
+
+    /**
      * add product to catalog
      */
-    static async addProducts(productDetails, catalogId): Promise<Catalogs> {
-        const productAdded = await ProductFactory.createProduct(
-            productDetails,
-            catalogId,
-        )
+    static async addProducts(
+        productIds: number[],
+        catalogId: number,
+    ): Promise<Catalogs> {
+        productIds.map(async (pId) => {
+            await ProductFactory.updateCatalogId(pId, catalogId)
+        })
         const catalog = await prisma.catalogs.findFirst({
             where: {
                 id: catalogId,

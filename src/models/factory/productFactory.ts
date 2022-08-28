@@ -25,12 +25,31 @@ export default class ProductFactory {
      */
     static async createProduct(
         productDetails,
-        catalogId: number,
+        catalogId?: number,
     ): Promise<Products> {
         const product = await prisma.products.create({
             data: {
                 name: productDetails.name,
                 price: Number(productDetails.price),
+                catalogId,
+            },
+        })
+
+        return product
+    }
+
+    /**
+     * update catalog Id of product
+     */
+    static async updateCatalogId(
+        productId: number,
+        catalogId: number,
+    ): Promise<Products> {
+        const product = await prisma.products.update({
+            where: {
+                id: productId,
+            },
+            data: {
                 catalogId,
             },
         })

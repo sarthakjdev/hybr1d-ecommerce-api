@@ -10,26 +10,27 @@ export default class SellerFactory {
             where: {
                 id: sellerid,
             },
+            include: {
+                user: true,
+                catalog: true,
+                orders: true,
+            },
         })
 
         return seller
     }
 
     /**
-     * create catalog
+     * create seller
      */
-    static async createCatalog(
-        sellerId: string,
-        catalogName: string,
-    ): Promise<Catalogs> {
-        const catalog = await prisma.catalogs.create({
+    static async createSeller(id: string): Promise<Sellers> {
+        const seller = await prisma.sellers.create({
             data: {
-                sellerId,
-                name: catalogName,
+                id,
             },
         })
 
-        return catalog
+        return seller
     }
 
     /**
@@ -56,6 +57,7 @@ export default class SellerFactory {
         })
 
         return orders
+        console.log('orders ', orders)
     }
 
     /**

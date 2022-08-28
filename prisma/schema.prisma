@@ -37,8 +37,8 @@ model Buyers {
 model Sellers {
   id        String    @id
   user      Users     @relation(fields: [id], references: [email])
-  catalogId Int?
-  catalog   Catalogs?
+  catalogId Int?   @unique
+  catalog   Catalogs? @relation(fields: [catalogId], references: [id])
   orders    Orders[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -49,8 +49,8 @@ model Sellers {
 model Catalogs {
   id       Int        @id @default(autoincrement())
   name     String?
-  sellerId String     @unique
-  seller   Sellers    @relation(fields: [sellerId], references: [id])
+  sellerId   String
+  seller   Sellers?
   products Products[]
 
   @@map("catalogs")
@@ -60,8 +60,8 @@ model Products {
   id        Int                @id @default(autoincrement())
   name      String
   price     Float
-  catalogId Int
-  catalog   Catalogs           @relation(fields: [catalogId], references: [id])
+  catalogId Int?
+  catalog   Catalogs?          @relation(fields: [catalogId], references: [id])
   orders    ProductsInOrders[]
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt

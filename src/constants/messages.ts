@@ -8,6 +8,7 @@ const messages = {
     login_success: 'Logged in successfully',
     unauthorized_req: 'Request not authenticated',
     invalidToken: 'Token invalid',
+    badReq: 'Bad Request',
 }
 
 export default messages
