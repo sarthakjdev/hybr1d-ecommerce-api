@@ -14,7 +14,7 @@ router.get(
 
 // get orders
 router.get(
-    '/orders',
+    '/:sellerId/orders',
     isAuthenticated,
     authorizeSeller,
     SellerControllers.getOrders,

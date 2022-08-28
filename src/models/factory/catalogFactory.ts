@@ -32,12 +32,8 @@ export default class CatalogFactory {
                 name: catalogName,
             },
         })
-        let seller = await prisma.sellers.findFirst({
-            where: {
-                id: sellerId,
-            },
-        })
-        seller = await prisma.sellers.update({
+
+        await prisma.sellers.update({
             where: {
                 id: sellerId,
             },

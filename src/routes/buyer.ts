@@ -38,7 +38,7 @@ router.post(
 
 // get orders
 router.get(
-    '/orders',
+    '/:buyerId/orders',
     isAuthenticated,
     authorizeBuyer,
     BuyerControllers.getOrders,

@@ -57,7 +57,6 @@ export default class SellerFactory {
         })
 
         return orders
-        console.log('orders ', orders)
     }
 
     /**
